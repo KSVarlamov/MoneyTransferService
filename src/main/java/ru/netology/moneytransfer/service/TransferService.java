@@ -28,6 +28,16 @@ public class TransferService {
         final CardToCardOperation operation = new CardToCardOperation(operationId.incrementAndGet());
         operationsRepository.add(operation);
 
+        checkOperation(operationDTO, operation);
+
+        operation.setAmount(operationDTO.getAmount());
+
+        operation.setStatus(CardToCardOperation.Status.WAITING_FOR_CONFIRM);
+
+        return operation;
+    }
+
+    private void checkOperation(CardToCardOperationDTO operationDTO, CardToCardOperation operation) {
         if (operationDTO.getCardFromNumber().equals(operationDTO.getCardToNumber())) {
             String err = String.format("Ошибка обработки операции: Нельзя отправить деньги самому себе [%s]", operationDTO.getCardFromNumber());
             operation.setStatus(CardToCardOperation.Status.FAILED);
@@ -94,12 +104,6 @@ public class TransferService {
             operation.setReason(err);
             throw new CardNotFoundException(err, operation);
         }
-        //TODO вынести проверки
-
-        operation.setAmount(operationDTO.getAmount());
-
-        operation.setStatus(CardToCardOperation.Status.WAITING_FOR_CONFIRM);
-        return operation;
     }
 
 
