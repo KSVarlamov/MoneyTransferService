@@ -1,10 +1,10 @@
 package ru.netology.moneytransfer.service;
 
 import org.springframework.stereotype.Service;
+import ru.netology.moneytransfer.dto.CardToCardOperationDTO;
 import ru.netology.moneytransfer.exceptions.CardNotFoundException;
 import ru.netology.moneytransfer.exceptions.CardNotValidException;
 import ru.netology.moneytransfer.model.CardToCardOperation;
-import ru.netology.moneytransfer.DTO.CardToCardOperationDTO;
 import ru.netology.moneytransfer.model.CreditCard;
 import ru.netology.moneytransfer.repository.CCardRepository;
 import ru.netology.moneytransfer.repository.OperationsRepository;

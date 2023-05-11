@@ -1,9 +1,9 @@
 package ru.netology.moneytransfer.service;
 
 import org.springframework.stereotype.Service;
+import ru.netology.moneytransfer.dto.ConfirmOperationDTO;
 import ru.netology.moneytransfer.exceptions.OperationNotFoundException;
 import ru.netology.moneytransfer.model.CardToCardOperation;
-import ru.netology.moneytransfer.DTO.ConfirmOperationDTO;
 import ru.netology.moneytransfer.repository.OperationsRepository;
 
 import java.math.BigDecimal;

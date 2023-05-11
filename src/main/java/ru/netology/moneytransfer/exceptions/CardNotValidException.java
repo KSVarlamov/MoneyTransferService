@@ -3,7 +3,7 @@ package ru.netology.moneytransfer.exceptions;
 import ru.netology.moneytransfer.model.CardToCardOperation;
 
 public class CardNotValidException extends RuntimeException{
-    private final CardToCardOperation operation;
+    private transient final CardToCardOperation operation;
 
     public CardNotValidException(String message, CardToCardOperation operation) {
         super(message);

@@ -2,11 +2,9 @@ package ru.netology.moneytransfer.model;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.validation.annotation.Validated;
 
 import java.time.LocalDate;
@@ -51,7 +49,6 @@ public class CardToCardOperation {
             s.append(String.valueOf(rnd.nextInt(10)));
         }
         this.code = s.toString();
-//        this.code = "0000";
     }
 
     public boolean checkCode (String code) {

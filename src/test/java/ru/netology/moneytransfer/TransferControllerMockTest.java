@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class TransferControllerMockTest {
+class TransferControllerMockTest {
 
     @MockBean
     CCardRepository repository;
@@ -47,7 +47,7 @@ public class TransferControllerMockTest {
                   "cardFromValidTill": "11/23",
                   "amount": {
                     "currency": "RUR",
-                    "value": 3500000
+                    "value": 129200
                   }
                 }
                 """;

@@ -1,4 +1,4 @@
-package ru.netology.moneytransfer.DTO;
+package ru.netology.moneytransfer.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

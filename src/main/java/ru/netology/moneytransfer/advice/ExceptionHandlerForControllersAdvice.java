@@ -8,7 +8,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.netology.moneytransfer.DTO.ErrorDTO;
+import ru.netology.moneytransfer.dto.ErrorDTO;
 
 import java.util.stream.Collectors;
 
