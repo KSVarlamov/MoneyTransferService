@@ -41,6 +41,7 @@ public class ConfirmOperationService {
 
         if (operation.get().getCcFrom().spendMoney(amountWithCommission)) {
             operation.get().getCcTo().addMoney(amount);
+            operation.get().setCommission(COMMISSION_PRICE.subtract(BigDecimal.ONE).multiply(amount));
             operation.get().setStatus(CardToCardOperation.Status.DONE);
         } else {
             operation.get().setStatus(CardToCardOperation.Status.FAILED);

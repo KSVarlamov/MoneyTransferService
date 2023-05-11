@@ -1,0 +1,8 @@
+
+services:
+  app1:
+    build:
+      ./
+    image: 'money-transfer-service:latest'
+    ports:
+      - '8080'

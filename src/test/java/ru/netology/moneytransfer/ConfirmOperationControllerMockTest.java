@@ -36,7 +36,6 @@ class ConfirmOperationControllerMockTest {
     private final static Amount normalAmount = new Amount(50000, "RUR");
     private final static Amount biglAmount = new Amount(170000, "RUR");
 
-
     @BeforeEach
     void addData() {
         testC2COperation1 = new CardToCardOperation(1);
@@ -49,7 +48,6 @@ class ConfirmOperationControllerMockTest {
         testC2COperation1.setAmount(normalAmount);
         Mockito.when(operationsRepository.getById(1)).thenReturn(Optional.of(testC2COperation1));
     }
-
 
     @Test
     void returnOk() throws Exception {

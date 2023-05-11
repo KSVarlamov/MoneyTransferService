@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.Setter;
 import org.springframework.validation.annotation.Validated;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Random;
 
@@ -30,6 +31,8 @@ public class CardToCardOperation {
 
     @NotNull
     Amount amount;
+
+    @NotNull BigDecimal commission;
 
     @Setter(AccessLevel.NONE)
     private final LocalDate created;
