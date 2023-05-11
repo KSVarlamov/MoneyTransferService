@@ -19,21 +19,19 @@ public class ConfirmOperationService {
         this.operationsRepository = operationsRepository;
     }
 
-
-
     public synchronized CardToCardOperation confirm(ConfirmOperationDTO operationDTO) {
 
         Optional<CardToCardOperation> operation = operationsRepository.getById(operationDTO.getOperationId());
         if (operation.isEmpty()) {
-            throw new OperationNotFoundException("No operation with id " + operationDTO.getOperationId(), operationDTO.getOperationId());
+            throw new OperationNotFoundException("Ошибка обработки операции: нет операции с id=" + operationDTO.getOperationId(), operationDTO.getOperationId());
         }
 
         if (!operation.get().getStatus().equals(CardToCardOperation.Status.WAITING_FOR_CONFIRM)) {
-            throw new OperationNotFoundException("Операция не требует подтверждения " + operationDTO.getOperationId(), operationDTO.getOperationId());
+            throw new OperationNotFoundException("Ошибка обработки операции: Операция не требует подтверждения " + operationDTO.getOperationId(), operationDTO.getOperationId());
         }
 
         if (!operation.get().checkCode(operationDTO.getCode())) {
-            throw new OperationNotFoundException("Некорректный код подтверждения " + operationDTO.getCode(), operationDTO.getOperationId());
+            throw new OperationNotFoundException("Ошибка обработки операции: Некорректный код подтверждения " + operationDTO.getCode(), operationDTO.getOperationId());
         }
 
 
@@ -46,7 +44,7 @@ public class ConfirmOperationService {
             operation.get().setStatus(CardToCardOperation.Status.DONE);
         } else {
             operation.get().setStatus(CardToCardOperation.Status.FAILED);
-            throw new OperationNotFoundException("Недостаточно денег для проведения опереации " + operationDTO.getOperationId(), operationDTO.getOperationId());
+            throw new OperationNotFoundException("Ошибка обработки операции: Недостаточно денег для проведения опереации " + operation.get(), operation.get().getId());
         }
 
         return operation.get();

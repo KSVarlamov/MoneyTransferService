@@ -15,11 +15,11 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ExceptionHandlerForControllersAdvice {
 
-    static final Logger fileLogger = LoggerFactory.getLogger("OperationsConfirmLog");
+    static final Logger fileLogger = LoggerFactory.getLogger("OperationsLog");
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorDTO> handleException(HttpMessageNotReadableException exception) {
-        fileLogger.warn("{}", exception.getMessage());
+        fileLogger.warn("Некорректеный запрос: {}", exception.getMessage());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(-1)
                 .message(exception.getMessage())
@@ -30,7 +30,7 @@ public class ExceptionHandlerForControllersAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getFieldErrors().stream().map(p -> "[" + p.getField() + " = " + p.getRejectedValue() + "] причина: " + p.getDefaultMessage()).collect(Collectors.joining(";   "));
-        fileLogger.warn("Некоррктеный запрос на подтвердение операции {}", errorMessage);
+        fileLogger.warn("Некорректеный запрос: {}", errorMessage);
         ErrorDTO error = ErrorDTO.builder().operationId(-1).message(errorMessage).build();
         return new ResponseEntity<>(error, HttpStatusCode.valueOf(400));
     }

@@ -2,7 +2,9 @@ package ru.netology.moneytransfer.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.validator.constraints.CreditCardNumber;
 import org.hibernate.validator.constraints.Length;
 
@@ -10,6 +12,8 @@ import java.math.BigDecimal;
 
 @Getter
 @AllArgsConstructor
+@ToString
+@EqualsAndHashCode
 public class CreditCard {
 
     @CreditCardNumber

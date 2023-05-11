@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 import ru.netology.moneytransfer.DTO.CardToCardOperationDTO;
 import ru.netology.moneytransfer.DTO.ErrorDTO;
@@ -14,8 +13,6 @@ import ru.netology.moneytransfer.DTO.OperationDTO;
 import ru.netology.moneytransfer.exceptions.CardNotFoundException;
 import ru.netology.moneytransfer.exceptions.CardNotValidException;
 import ru.netology.moneytransfer.service.TransferService;
-
-import java.util.stream.Collectors;
 
 @CrossOrigin(maxAge = 3600)
 @RestController
@@ -28,20 +25,20 @@ public class TransferController {
 
     public TransferController(TransferService service) {
         this.service = service;
-        log.info("Старт контроллера перевода денег");
+        fileLogger.info("Старт контроллера перевода денег");
     }
 
     @PostMapping("transfer")
     public OperationDTO transferMoney(@RequestBody @Valid CardToCardOperationDTO operation) {
-        fileLogger.info("Получен запрос на проведение операции {}", operation);
+        fileLogger.info("Получен запрос на проведение операции перевода [{}]", operation);
         var result = service.transferMoney(operation);
-        fileLogger.info("Обработана операция {}", result);
+        fileLogger.info("Обработана операция перевода [{}]", result);
         return new OperationDTO(result.getId());
     }
 
     @ExceptionHandler(CardNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(CardNotValidException exception) {
-        fileLogger.warn("{} [{}]", exception.getMessage(), exception.getOperation());
+        fileLogger.warn("Ошибка обработки операции [{}] {}", exception.getOperation(), exception.getMessage());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
@@ -51,7 +48,7 @@ public class TransferController {
 
     @ExceptionHandler(CardNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleException(CardNotFoundException exception) {
-        fileLogger.warn("{} [{}]", exception.getMessage(), exception.getOperation());
+        fileLogger.warn("Ошибка обработки операции [{}] {}", exception.getOperation(), exception.getMessage());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())

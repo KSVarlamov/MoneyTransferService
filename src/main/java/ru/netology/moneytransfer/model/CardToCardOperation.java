@@ -45,13 +45,13 @@ public class CardToCardOperation {
         this.id = id;
         this.created = LocalDate.now();
         this.status = Status.NEW;
-//        Random rnd = new Random();
-//        StringBuilder s = new StringBuilder();
-//        for (int i = 0; i < 4; i++) {
-//            s.append(String.valueOf(rnd.nextInt(10)));
-//        }
-//        this.code = s.toString();
-        this.code = "0000";
+        Random rnd = new Random();
+        StringBuilder s = new StringBuilder();
+        for (int i = 0; i < 4; i++) {
+            s.append(String.valueOf(rnd.nextInt(10)));
+        }
+        this.code = s.toString();
+//        this.code = "0000";
     }
 
     public boolean checkCode (String code) {

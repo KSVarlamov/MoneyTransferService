@@ -11,6 +11,7 @@ import ru.netology.moneytransfer.DTO.ConfirmOperationDTO;
 import ru.netology.moneytransfer.DTO.ErrorDTO;
 import ru.netology.moneytransfer.DTO.OperationDTO;
 import ru.netology.moneytransfer.exceptions.OperationNotFoundException;
+import ru.netology.moneytransfer.model.CardToCardOperation;
 import ru.netology.moneytransfer.service.ConfirmOperationService;
 
 @CrossOrigin(maxAge = 3600)
@@ -18,28 +19,25 @@ import ru.netology.moneytransfer.service.ConfirmOperationService;
 @RequestMapping("/")
 @Slf4j
 public class ConfirmOperationController {
+    static final Logger fileLogger = LoggerFactory.getLogger("OperationsLog");
     private final ConfirmOperationService service;
 
     public ConfirmOperationController(ConfirmOperationService service) {
         this.service = service;
+        fileLogger.info("Старт контроллера подтверждения операция");
     }
-
-    static final Logger fileLogger = LoggerFactory.getLogger("OperationsConfirmLog");
-    //TODO логирование в файл
-
 
     @PostMapping("confirmOperation")
     public OperationDTO handleRequest(@RequestBody @Valid ConfirmOperationDTO confirmOperationDTO) {
-        log.info("Получен запрос на подтвержение операции перевода №{}", confirmOperationDTO.getOperationId());
-        int id = service.confirm(confirmOperationDTO).getId();
-        fileLogger.info("Обработан запрос на подтверждение {}", confirmOperationDTO);
-        return new OperationDTO(id);
-
+        fileLogger.info("Получен запрос на подтвержение операции перевода [{}]", confirmOperationDTO);
+        CardToCardOperation c2cOperation = service.confirm(confirmOperationDTO);
+        fileLogger.info("Обработан запрос на подтвеждение операции {}", c2cOperation);
+        return new OperationDTO(c2cOperation.getId());
     }
 
     @ExceptionHandler(OperationNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleException(OperationNotFoundException exception) {
-        fileLogger.warn("{}", exception.getMessage());
+        fileLogger.warn("Некорректеный запрос: {}", exception.getMessage());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getId())
                 .message(exception.getMessage())

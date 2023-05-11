@@ -29,14 +29,14 @@ public class TransferService {
         operationsRepository.add(operation);
 
         if (operationDTO.getCardFromNumber().equals(operationDTO.getCardToNumber())) {
-            String err = String.format("Нельзя отправить деньги самому себе [%s]", operationDTO.getCardFromNumber());
+            String err = String.format("Ошибка обработки операции: Нельзя отправить деньги самому себе [%s]", operationDTO.getCardFromNumber());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotFoundException(err, operation);
         }
 
         if (!"RUR".equals(operationDTO.getAmount().getCurrency())) {
-            String err = "Доступны переводы только в рублях";
+            String err = "Ошибка обработки операции: Доступны переводы только в рублях";
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotFoundException(err, operation);
@@ -46,7 +46,7 @@ public class TransferService {
 
         int month = Integer.parseInt(parts[0]);
         if (month > 12 || month <= 0) {
-            String err = String.format("Некорректная дата действия карты [%s]. Месяц в диапазоне должен быть 01..12", operationDTO.getCardFromValidTill());
+            String err = String.format("Ошибка обработки операции: Некорректная дата действия карты [%s]. Месяц в диапазоне должен быть 01..12", operationDTO.getCardFromValidTill());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotValidException(err, operation);
@@ -56,7 +56,7 @@ public class TransferService {
 
         int cardYear = Integer.parseInt(parts[1]) + 2000;
         if ((cardYear < date.getYear()) || ((cardYear == date.getYear()) && (month < date.getMonthValue()))) {
-            String err = String.format("Дата действия карты [%s] истекла", operationDTO.getCardFromValidTill());
+            String err = String.format("Ошибка обработки операции: Дата действия карты [%s] истекла", operationDTO.getCardFromValidTill());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotValidException(err, operation);
@@ -64,7 +64,7 @@ public class TransferService {
 
         Optional<CreditCard> ccFrom = ccRepository.getCardByNumber(operationDTO.getCardFromNumber());
         if (ccFrom.isEmpty()) {
-            String err = String.format("Карта отправителя [%s] не существует", operationDTO.getCardFromNumber());
+            String err = String.format("Ошибка обработки операции: Карта отправителя [%s] не существует", operationDTO.getCardFromNumber());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotFoundException(err, operation);
@@ -73,7 +73,7 @@ public class TransferService {
         }
         Optional<CreditCard> ccTo = ccRepository.getCardByNumber(operationDTO.getCardToNumber());
         if (ccTo.isEmpty()) {
-            String err = String.format("Карта получателя [%s] не существует", operationDTO.getCardToNumber());
+            String err = String.format("Ошибка обработки операции: Карта получателя [%s] не существует", operationDTO.getCardToNumber());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotFoundException(err, operation);
@@ -82,14 +82,14 @@ public class TransferService {
         }
 
         if (!operationDTO.getCardFromValidTill().equals(ccFrom.get().getCcTill())) {
-            String err = String.format("Некорректная дата действия карты [%s]", operationDTO.getCardFromValidTill());
+            String err = String.format("Ошибка обработки операции: Некорректная дата действия карты [%s]", operationDTO.getCardFromValidTill());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotFoundException(err, operation);
         }
 
         if (!operationDTO.getCardFromCVV().equals(ccFrom.get().getCvv())) {
-            String err = String.format("Некорректный CVV [%s]", operationDTO.getCardFromCVV());
+            String err = String.format("Ошибка обработки операции: Некорректный CVV [%s]", operationDTO.getCardFromCVV());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotFoundException(err, operation);
