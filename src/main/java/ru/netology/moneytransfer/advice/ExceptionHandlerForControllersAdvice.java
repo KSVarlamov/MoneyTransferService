@@ -18,11 +18,12 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class ExceptionHandlerForControllersAdvice {
 
+    public static final String ERROR_MESSAGE_TEMPLATE = "Некорректеный запрос: {}";
     static final Logger fileLogger = LoggerFactory.getLogger("OperationsLog");
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorDTO> handleException(HttpMessageNotReadableException exception) {
-        fileLogger.warn("Некорректеный запрос: {}", exception.getMessage());
+        fileLogger.warn(ERROR_MESSAGE_TEMPLATE, exception.getMessage());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(-1)
                 .message(exception.getMessage())
@@ -33,7 +34,7 @@ public class ExceptionHandlerForControllersAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getFieldErrors().stream().map(p -> "[" + p.getField() + " = " + p.getRejectedValue() + "] причина: " + p.getDefaultMessage()).collect(Collectors.joining(";   "));
-        fileLogger.warn("Некорректеный запрос: {}", errorMessage);
+        fileLogger.warn(ERROR_MESSAGE_TEMPLATE, errorMessage);
         ErrorDTO error = ErrorDTO.builder().operationId(-1).message(errorMessage).build();
         return new ResponseEntity<>(error, HttpStatusCode.valueOf(400));
     }
@@ -41,7 +42,7 @@ public class ExceptionHandlerForControllersAdvice {
 
     @ExceptionHandler(CardNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(CardNotValidException exception) {
-        fileLogger.warn("Ошибка обработки операции [{}]", exception.getOperation());
+        fileLogger.warn(ERROR_MESSAGE_TEMPLATE, exception.getOperation());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())

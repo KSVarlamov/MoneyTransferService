@@ -1,6 +1,5 @@
 package ru.netology.moneytransfer.model;
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Data;

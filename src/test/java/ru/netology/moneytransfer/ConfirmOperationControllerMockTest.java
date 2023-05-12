@@ -118,4 +118,23 @@ class ConfirmOperationControllerMockTest {
     }
 
 
+    @Test
+    void return500_notInRepo() throws Exception {
+        String requestBody = """
+                {
+                  "code": "0123",
+                  "operationId": "1251000"
+                }
+                """;
+        mockMvc.perform(
+                        post("/confirmOperation")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody)
+                )
+                .andExpect(status().is(500))
+                .andExpect(jsonPath("$.operationId").value(1251000))
+                .andExpect(jsonPath("$.message").isNotEmpty());
+    }
+
+
 }
