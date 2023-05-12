@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.netology.moneytransfer.dto.CardToCardOperationDTO;
 import ru.netology.moneytransfer.dto.ErrorDTO;
 import ru.netology.moneytransfer.dto.OperationDTO;
-import ru.netology.moneytransfer.exceptions.CardNotFoundException;
+import ru.netology.moneytransfer.exceptions.OperationException;
 import ru.netology.moneytransfer.exceptions.CardNotValidException;
 import ru.netology.moneytransfer.service.TransferService;
 
@@ -38,7 +38,7 @@ public class TransferController {
 
     @ExceptionHandler(CardNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(CardNotValidException exception) {
-        fileLogger.warn("Ошибка обработки операции [{}] {}", exception.getOperation(), exception.getMessage());
+        fileLogger.warn("Ошибка обработки операции [{}]", exception.getOperation());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
@@ -46,9 +46,9 @@ public class TransferController {
         return new ResponseEntity<>(error, HttpStatusCode.valueOf(400));
     }
 
-    @ExceptionHandler(CardNotFoundException.class)
-    public ResponseEntity<ErrorDTO> handleException(CardNotFoundException exception) {
-        fileLogger.warn("Ошибка обработки операции [{}] {}", exception.getOperation(), exception.getMessage());
+    @ExceptionHandler(OperationException.class)
+    public ResponseEntity<ErrorDTO> handleException(OperationException exception) {
+        fileLogger.warn("Ошибка обработки операции [{}]", exception.getOperation());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())

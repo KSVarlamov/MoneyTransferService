@@ -2,10 +2,10 @@ package ru.netology.moneytransfer.exceptions;
 
 import ru.netology.moneytransfer.model.CardToCardOperation;
 
-public class CardNotFoundException extends RuntimeException {
+public class OperationException extends RuntimeException {
     private final transient CardToCardOperation operation;
 
-    public CardNotFoundException(String message, CardToCardOperation operation) {
+    public OperationException(String message, CardToCardOperation operation) {
         super(message);
         this.operation = operation;
     }

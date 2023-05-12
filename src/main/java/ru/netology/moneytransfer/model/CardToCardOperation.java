@@ -9,49 +9,46 @@ import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.Random;
 
 @Data
 @Validated
 public class CardToCardOperation {
-    @Min(1)
+
     private final int id;
 
-    @NotNull
-    private CreditCard ccFrom;
+    @Setter(AccessLevel.NONE)
+    private final LocalDate created;
 
     @NotNull
-    private CreditCard ccTo;
+    private BigDecimal amount;
+
+    @NotNull
+    private String currency;
+
+    @NotNull
+    BigDecimal commission;
+
+    @NotNull
+    private String ccFrom;
+
+    @NotNull
+    private String ccTo;
 
     @NotNull
     private String reason = "";
 
     @NotNull
-    private String code;
-
-    @NotNull
-    Amount amount;
-
-    @NotNull BigDecimal commission;
-
-    @Setter(AccessLevel.NONE)
-    private final LocalDate created;
+    private String code = "0000";
 
     @Setter(AccessLevel.NONE)
     private int codeChecksLast = 3;
 
-    private Status status = Status.NEW;
+    private Status status;
 
     public CardToCardOperation(int id) {
         this.id = id;
         this.created = LocalDate.now();
         this.status = Status.NEW;
-        Random rnd = new Random();
-        StringBuilder s = new StringBuilder();
-        for (int i = 0; i < 4; i++) {
-            s.append(String.valueOf(rnd.nextInt(10)));
-        }
-        this.code = s.toString();
     }
 
     public boolean checkCode (String code) {

@@ -1,19 +1,17 @@
 package ru.netology.moneytransfer;
 
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.netology.moneytransfer.model.CreditCard;
-import ru.netology.moneytransfer.repository.CCardRepository;
+import ru.netology.moneytransfer.model.CardToCardOperation;
+import ru.netology.moneytransfer.repository.OperationsRepository;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -23,22 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 class TransferControllerMockTest {
 
-    @MockBean
-    CCardRepository repository;
-
     @Autowired
     private MockMvc mockMvc;
 
-    @BeforeEach
-    void addTestData() {
-        CreditCard cc1 = new CreditCard("4960144072893312", "157", "11/23", new BigDecimal(1000));
-        CreditCard cc2 = new CreditCard("4960149153260042", "333", "01/24", new BigDecimal(0));
-        Mockito.when(repository.getCardByNumber("4960144072893312")).thenReturn(Optional.of(cc1));
-        Mockito.when(repository.getCardByNumber("4960149153260042")).thenReturn(Optional.of(cc2));
-    }
+    @MockBean
+    OperationsRepository operationsRepository;
 
     @Test
-    void returnOk() throws Exception {
+    void return200_correctData() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -47,7 +37,7 @@ class TransferControllerMockTest {
                   "cardFromValidTill": "11/23",
                   "amount": {
                     "currency": "RUR",
-                    "value": 129200
+                    "value": 12920
                   }
                 }
                 """;
@@ -62,7 +52,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void incorrectCardFromNumberTest() throws Exception {
+    void return400_incorrectCardFromNumberTest() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "321",
@@ -75,7 +65,6 @@ class TransferControllerMockTest {
                   }
                 }
                 """;
-
         mockMvc.perform(
                         post("/transfer")
                                 .contentType(MediaType.APPLICATION_JSON)
@@ -85,7 +74,7 @@ class TransferControllerMockTest {
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
     @Test
-    void incorrectCardToNumberTest() throws Exception {
+    void return400_incorrectCardToNumberTest() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -109,7 +98,29 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void incorrectCVVNumberTest_2digits() throws Exception {
+    void return400_incorrectCVVNumberTest_2digits() throws Exception {
+        String requestBody = """
+                {
+                  "cardFromNumber": "4960144072893312",
+                  "cardToNumber": "4960149153260042",
+                  "cardFromCVV": "03",
+                  "cardFromValidTill": "11/23",
+                  "amount": {
+                    "currency": "RUR",
+                    "value": 35000
+                  }
+                }
+                """;
+        mockMvc.perform(
+                        post("/transfer")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody)
+                )
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").isNotEmpty());
+    }
+    @Test
+    void return400_incorrectCVVNumberTest_5letters() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -131,32 +142,9 @@ class TransferControllerMockTest {
                 .andExpect(status().is(400))
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
-    @Test
-    void incorrectCVVNumberTest_5letters() throws Exception {
-        String requestBody = """
-                {
-                  "cardFromNumber": "4960144072893312",
-                  "cardToNumber": "4960149153260042",
-                  "cardFromCVV": "03",
-                  "cardFromValidTill": "11/23",
-                  "amount": {
-                    "currency": "RUR",
-                    "value": 35000
-                  }
-                }
-                """;
-
-        mockMvc.perform(
-                        post("/transfer")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody)
-                )
-                .andExpect(status().is(400))
-                .andExpect(jsonPath("$.message").isNotEmpty());
-    }
 
     @Test
-    void incorrectTill_someText() throws Exception {
+    void return400_incorrectTill_someText() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -180,7 +168,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void incorrectTill_monthOver12() throws Exception {
+    void return400_incorrectTill_monthOver12() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -203,7 +191,7 @@ class TransferControllerMockTest {
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
     @Test
-    void incorrectTill_month0() throws Exception {
+    void return400_incorrectTill_month0() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -227,7 +215,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void incorrectTill_expireDate() throws Exception {
+    void return400_incorrectTill_expireDate() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -251,58 +239,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void cardFromNotInRepo() throws Exception {
-        String requestBody = """
-                {
-                  "cardFromNumber": "4960145176714874",
-                  "cardToNumber": "4960149153260042",
-                  "cardFromCVV": "157",
-                  "cardFromValidTill": "11/23",
-                  "amount": {
-                    "currency": "RUR",
-                    "value": 35000
-                  }
-                }
-                """;
-
-        mockMvc.perform(
-                        post("/transfer")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody)
-                )
-                .andExpect(status().is(500))
-                .andExpect(jsonPath("$.message").isNotEmpty());
-    }
-
-    @Test
-    void cardToNotInRepo() throws Exception {
-        String requestBody = """
-                {
-                  "cardFromNumber": "4960144072893312",
-                  "cardToNumber": "4960143468869167",
-                  "cardFromCVV": "157",
-                  "cardFromValidTill": "11/23",
-                  "amount": {
-                    "currency": "RUR",
-                    "value": 35000
-                  }
-                }
-                """;
-
-        mockMvc.perform(
-                        post("/transfer")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody)
-                )
-                .andExpect(status().is(500))
-                .andExpect(jsonPath("$.message").isNotEmpty());
-    }
-
-    //TODO amoumt tests
-
-
-    @Test
-    void amount_nonRur() throws Exception {
+    void return500_amount_nonRur() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -326,7 +263,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void amount_incorrectCurrency() throws Exception {
+    void return400_amount_incorrectCurrency() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -350,7 +287,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void amount_negativeValue() throws Exception {
+    void return400_amount_negativeValue() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -374,7 +311,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void amount_valueIsString() throws Exception {
+    void return400_amount_valueIsString() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
@@ -398,7 +335,7 @@ class TransferControllerMockTest {
     }
 
     @Test
-    void transfer_himself() throws Exception {
+    void return500_transfer_himself() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "4960144072893312",
