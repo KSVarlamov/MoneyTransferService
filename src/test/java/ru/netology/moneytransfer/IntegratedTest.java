@@ -5,22 +5,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import ru.netology.moneytransfer.dto.CardToCardOperationDTO;
-import ru.netology.moneytransfer.dto.ErrorDTO;
+import ru.netology.moneytransfer.dto.ConfirmOperationDTO;
 import ru.netology.moneytransfer.dto.OperationDTO;
 import ru.netology.moneytransfer.model.Amount;
-import ru.netology.moneytransfer.service.TransferService;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 
 @Testcontainers
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -41,13 +35,23 @@ class IntegratedTest {
 
 
     @Test
-    void transferController_return200() {
+    void transactionTest_return200() {
         ResponseEntity<OperationDTO> response = restTemplate.postForEntity(
                 "http://localhost:" + moneyTransferService.getMappedPort(5500) + "/transfer",
                 validOperation,
                 OperationDTO.class);
         Assertions.assertEquals(200, response.getStatusCode().value());
-        System.out.println(response.getBody());
-    }
 
+        int operationId = Objects.requireNonNull(response.getBody()).getOperationId();
+        ConfirmOperationDTO confirmOperationDTO = new ConfirmOperationDTO();
+        confirmOperationDTO.setOperationId(operationId);
+        confirmOperationDTO.setCode("1234");
+
+        response = restTemplate.postForEntity(
+                "http://localhost:" + moneyTransferService.getMappedPort(5500) + "/confirmOperation",
+                confirmOperationDTO,
+                OperationDTO.class);
+        Assertions.assertEquals(200, response.getStatusCode().value());
+        Assertions.assertEquals(operationId, Objects.requireNonNull(response.getBody()).getOperationId());
+    }
 }
