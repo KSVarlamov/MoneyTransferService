@@ -4,3 +4,4 @@ target/
 HELP.md
 mvnw*
 src/test/cards.txt
+.run/
