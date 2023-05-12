@@ -4,13 +4,9 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatusCode;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.netology.moneytransfer.dto.ConfirmOperationDTO;
-import ru.netology.moneytransfer.dto.ErrorDTO;
 import ru.netology.moneytransfer.dto.OperationDTO;
-import ru.netology.moneytransfer.exceptions.OperationNotFoundException;
 import ru.netology.moneytransfer.model.CardToCardOperation;
 import ru.netology.moneytransfer.service.ConfirmOperationService;
 
@@ -33,16 +29,6 @@ public class ConfirmOperationController {
         CardToCardOperation c2cOperation = service.confirm(confirmOperationDTO);
         fileLogger.info("Обработан запрос на подтвеждение операции {}", c2cOperation);
         return new OperationDTO(c2cOperation.getId());
-    }
-
-    @ExceptionHandler(OperationNotFoundException.class)
-    public ResponseEntity<ErrorDTO> handleException(OperationNotFoundException exception) {
-        fileLogger.warn("Некорректеный запрос: {}", exception.getMessage());
-        ErrorDTO error = ErrorDTO.builder()
-                .operationId(exception.getId())
-                .message(exception.getMessage())
-                .build();
-        return new ResponseEntity<>(error, HttpStatusCode.valueOf(500));
     }
 
 }
