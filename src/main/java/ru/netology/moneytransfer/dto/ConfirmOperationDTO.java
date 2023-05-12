@@ -2,10 +2,10 @@ package ru.netology.moneytransfer.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
-import lombok.Value;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-@Value
+@Data
 public class ConfirmOperationDTO {
 
     @Positive

@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.hibernate.validator.constraints.CreditCardNumber;
@@ -11,6 +12,7 @@ import ru.netology.moneytransfer.model.Amount;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class CardToCardOperationDTO {
 
     @NotBlank

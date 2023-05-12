@@ -7,4 +7,8 @@ import lombok.Data;
 @AllArgsConstructor
 public class OperationDTO {
     private int operationId;
+
+    public OperationDTO() {
+
+    }
 }
