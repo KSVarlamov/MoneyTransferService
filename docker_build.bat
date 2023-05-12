@@ -1,1 +1,1 @@
-docker build -t money-transfer-service:latest -t money-transfer-service:0.0.1 -f ./docker/Dockerfile .
+docker build -t money-transfer-service:latest -t money-transfer-service:0.0.2 -f ./docker/Dockerfile .

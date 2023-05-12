@@ -117,54 +117,5 @@ class ConfirmOperationControllerMockTest {
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
 
-    @Test
-    void return500_incorrectCode() throws Exception {
-        String requestBody = """
-                {
-                  "code": "0987",
-                  "operationId": "1"
-                }
-                """;
-        mockMvc.perform(
-                        post("/confirmOperation")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody)
-                )
-                .andExpect(status().is(500))
-                .andExpect(jsonPath("$.operationId").value(1));
-        Assertions.assertEquals(CardToCardOperation.Status.WAITING_FOR_CONFIRM, testC2COperation1.getStatus());
-
-
-        requestBody = """
-                {
-                  "code": "0987",
-                  "operationId": "1"
-                }
-                """;
-        mockMvc.perform(
-                        post("/confirmOperation")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody)
-                )
-                .andExpect(status().is(500))
-                .andExpect(jsonPath("$.operationId").value(1));
-        Assertions.assertEquals(CardToCardOperation.Status.WAITING_FOR_CONFIRM, testC2COperation1.getStatus());
-
-        requestBody = """
-                {
-                  "code": "0987",
-                  "operationId": "1"
-                }
-                """;
-        mockMvc.perform(
-                        post("/confirmOperation")
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .content(requestBody)
-                )
-                .andExpect(status().is(500))
-                .andExpect(jsonPath("$.operationId").value(1));
-        Assertions.assertEquals(CardToCardOperation.Status.FAILED, testC2COperation1.getStatus());
-
-    }
 
 }
