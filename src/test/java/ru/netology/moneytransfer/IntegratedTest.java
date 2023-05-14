@@ -29,20 +29,21 @@ class IntegratedTest {
     @Container
     private static final GenericContainer<?> moneyTransferService = new GenericContainer<>("money-transfer-service:latest:latest").withExposedPorts(5500);
 
-    private static final CardToCardOperationDTO validOperation = new CardToCardOperationDTO(
-            "4960144072893312",
-            "11/23",
-            "157",
-            "4960149153260042",
-            new Amount(12920, "RUR"));
+    private static final CardToCardOperationDTO validOperation = CardToCardOperationDTO.builder()
+            .cardFromNumber("4960144072893312")
+            .cardFromValidTill("11/23")
+            .cardFromCVV("157")
+            .cardToNumber("4960149153260042")
+            .amount(new Amount(12920, "RUR"))
+            .build();
 
-    private static final CardToCardOperationDTO invalidCardInOperation = new CardToCardOperationDTO(
-            "zzz",
-            "11/23",
-            "157",
-            "4960149153260042",
-            new Amount(12920, "RUR"));
-
+    private static final CardToCardOperationDTO invalidCardInOperation = CardToCardOperationDTO.builder()
+            .cardFromNumber("zzz")
+            .cardFromValidTill("11/23")
+            .cardFromCVV("157")
+            .cardToNumber("4960149153260042")
+            .amount(new Amount(12920, "RUR"))
+            .build();
 
     @Test
     void transactionTest_return200() {
@@ -50,12 +51,12 @@ class IntegratedTest {
                 "http://localhost:" + moneyTransferService.getMappedPort(5500) + "/transfer",
                 validOperation,
                 OperationDTO.class);
+        System.out.println(response.getBody());
         Assertions.assertEquals(200, response.getStatusCode().value());
 
         int operationId = Objects.requireNonNull(response.getBody()).getOperationId();
-        ConfirmOperationDTO confirmOperationDTO = new ConfirmOperationDTO();
-        confirmOperationDTO.setOperationId(operationId);
-        confirmOperationDTO.setCode("1234");
+        ConfirmOperationDTO confirmOperationDTO;
+        confirmOperationDTO = new ConfirmOperationDTO(operationId, "1234");
 
         response = restTemplate.postForEntity(
                 "http://localhost:" + moneyTransferService.getMappedPort(5500) + "/confirmOperation",
@@ -87,9 +88,7 @@ class IntegratedTest {
     @Test
     void return500_noOperationInRepo() {
         int opId = 123456789;
-        ConfirmOperationDTO confirmOperationDTO = new ConfirmOperationDTO();
-        confirmOperationDTO.setOperationId(opId);
-        confirmOperationDTO.setCode("1234");
+        ConfirmOperationDTO confirmOperationDTO = new ConfirmOperationDTO(opId, "1234");
         ResponseEntity<ErrorDTO> response = restTemplate.postForEntity(
                 "http://localhost:" + moneyTransferService.getMappedPort(5500) + "/confirmOperation",
                 confirmOperationDTO,

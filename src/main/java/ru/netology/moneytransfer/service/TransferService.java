@@ -26,7 +26,7 @@ public class TransferService {
         final CardToCardOperation operation = new CardToCardOperation(operationId.incrementAndGet());
         operationsRepository.add(operation);
 
-        BigDecimal amountInRub = BigDecimal.valueOf((double) operationDTO.getAmount().getValue() / 100); //Переводим копейки в рубли
+        BigDecimal amountInRub = BigDecimal.valueOf((double) operationDTO.amount().getValue() / 100); //Переводим копейки в рубли
         operation.setAmount(amountInRub);
         operation.setCommission(amountInRub.multiply(COMMISSION_PRICE));
 
@@ -37,26 +37,26 @@ public class TransferService {
     }
 
     private void checkOperation(CardToCardOperationDTO operationDTO, CardToCardOperation operation) {
-        if (operationDTO.getCardFromNumber().equals(operationDTO.getCardToNumber())) {
-            String err = String.format("Ошибка обработки операции: Нельзя отправить деньги самому себе [%s]", operationDTO.getCardFromNumber());
+        if (operationDTO.cardFromNumber().equals(operationDTO.cardToNumber())) {
+            String err = String.format("Ошибка обработки операции: Нельзя отправить деньги самому себе [%s]", operationDTO.cardFromNumber());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new OperationException(err, operation);
         } else {
-            operation.setCcFrom(operationDTO.getCardFromNumber());
-            operation.setCcTo(operationDTO.getCardToNumber());
+            operation.setCcFrom(operationDTO.cardFromNumber());
+            operation.setCcTo(operationDTO.cardToNumber());
         }
-        operation.setCurrency(operationDTO.getAmount().getCurrency());
-        if (!"RUR".equals(operationDTO.getAmount().getCurrency())) {
+        operation.setCurrency(operationDTO.amount().getCurrency());
+        if (!"RUR".equals(operationDTO.amount().getCurrency())) {
             String err = "Ошибка обработки операции: Доступны переводы только в рублях";
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new OperationException(err, operation);
         }
-        String[] parts = operationDTO.getCardFromValidTill().split("/");
+        String[] parts = operationDTO.cardFromValidTill().split("/");
         int month = Integer.parseInt(parts[0]);
         if (month > 12 || month <= 0) {
-            String err = String.format("Ошибка обработки операции: Некорректная дата действия карты [%s]. Месяц в диапазоне должен быть 01..12", operationDTO.getCardFromValidTill());
+            String err = String.format("Ошибка обработки операции: Некорректная дата действия карты [%s]. Месяц в диапазоне должен быть 01..12", operationDTO.cardFromValidTill());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotValidException(err, operation);
@@ -64,7 +64,7 @@ public class TransferService {
         LocalDate date = LocalDate.now();
         int cardYear = Integer.parseInt(parts[1]) + 2000;
         if ((cardYear < date.getYear()) || ((cardYear == date.getYear()) && (month < date.getMonthValue()))) {
-            String err = String.format("Ошибка обработки операции: Дата действия карты [%s] истекла", operationDTO.getCardFromValidTill());
+            String err = String.format("Ошибка обработки операции: Дата действия карты [%s] истекла", operationDTO.cardFromValidTill());
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
             throw new CardNotValidException(err, operation);

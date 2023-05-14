@@ -19,15 +19,15 @@ public class ConfirmOperationService {
 
     public synchronized CardToCardOperation confirm(ConfirmOperationDTO operationDTO) {
 
-        Optional<CardToCardOperation> operation = operationsRepository.getById(operationDTO.getOperationId());
+        Optional<CardToCardOperation> operation = operationsRepository.getById(operationDTO.operationId());
         if (operation.isEmpty()) {
-            throw new OperationNotFoundException("Ошибка обработки операции: нет операции с id=" + operationDTO.getOperationId(), operationDTO.getOperationId());
+            throw new OperationNotFoundException("Ошибка обработки операции: нет операции с id=" + operationDTO.operationId(), operationDTO.operationId());
         }
 
         if (!operation.get().getStatus().equals(CardToCardOperation.Status.WAITING_FOR_CONFIRM)) {
-            throw new OperationNotFoundException("Ошибка обработки операции: Операция не ожидает подтверждения " + operationDTO.getOperationId(), operationDTO.getOperationId());
+            throw new OperationNotFoundException("Ошибка обработки операции: Операция не ожидает подтверждения " + operationDTO.operationId(), operationDTO.operationId());
         }
-        operation.get().setCode(operationDTO.getCode());
+        operation.get().setCode(operationDTO.code());
         operation.get().setStatus(CardToCardOperation.Status.DONE);
         return operation.get();
     }
