@@ -12,7 +12,7 @@ import ru.netology.moneytransfer.model.CardToCardOperation;
 import ru.netology.moneytransfer.service.ConfirmOperationService;
 import ru.netology.moneytransfer.service.TransferService;
 
-@CrossOrigin(maxAge = 3600)
+@CrossOrigin
 @RestController
 @RequestMapping("/")
 @Slf4j
