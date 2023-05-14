@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class OperationsRepositoryInMemory implements OperationsRepository {
-    private static final ConcurrentHashMap<Integer, CardToCardOperation> operations = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<Integer, CardToCardOperation> operations = new ConcurrentHashMap<>();
 
     @Override
     public void add(CardToCardOperation operation) {
