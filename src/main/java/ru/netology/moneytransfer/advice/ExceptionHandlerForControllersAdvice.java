@@ -34,14 +34,16 @@ public class ExceptionHandlerForControllersAdvice {
     public ResponseEntity<ErrorDTO> handleException(MethodArgumentNotValidException exception) {
         var errorMessage = new StringBuilder();
         var errors = exception.getBindingResult().getFieldErrors();
-        for (var err : errors) {
+        for (int i = 0; i < errors.size(); i++) {
             errorMessage.append("[")
-                    .append(err.getField())
-                    .append(" ")
-                    .append(err.getRejectedValue())
+                    .append(errors.get(i).getField())
+                    .append(" = ")
+                    .append(errors.get(i).getRejectedValue())
                     .append("] причина: ")
-                    .append(err.getDefaultMessage())
-                    .append(";   ");
+                    .append(errors.get(i).getDefaultMessage());
+                    if (i + 1 < errors.size()) {
+                        errorMessage.append(";   ");
+                    }
         }
         fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, errorMessage);
         ErrorDTO error = ErrorDTO.builder().operationId(-1).message(errorMessage.toString()).build();

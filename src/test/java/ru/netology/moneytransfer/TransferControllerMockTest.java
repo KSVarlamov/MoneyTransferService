@@ -74,7 +74,7 @@ class TransferControllerMockTest {
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
     @Test
-    void return400_OverOneIncorrectField() throws Exception {
+    void return400_overOneIncorrectField() throws Exception {
         String requestBody = """
                 {
                   "cardFromNumber": "321",
