@@ -79,7 +79,7 @@ class IntegratedTest {
 
         assertThat(response.getStatusCode().value())
                 .isEqualTo(400);
-        assertThat(Objects.requireNonNull(response.getBody()).getMessage())
+        assertThat(Objects.requireNonNull(response.getBody()).message())
                 .isNotEmpty()
                 .matches("\\[cardFromNumber = \\w*] причина: Недопустимый номер карты отправителя");
 
@@ -97,7 +97,7 @@ class IntegratedTest {
         assertThat(response.getStatusCode().value())
                 .isEqualTo(500);
 
-        assertThat(Objects.requireNonNull(response.getBody()).getMessage())
+        assertThat(Objects.requireNonNull(response.getBody()).message())
                 .isNotEmpty()
                 .isEqualTo("Ошибка обработки операции: нет операции с id=" + opId);
     }
