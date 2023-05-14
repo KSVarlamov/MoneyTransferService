@@ -74,6 +74,28 @@ class TransferControllerMockTest {
                 .andExpect(jsonPath("$.message").isNotEmpty());
     }
     @Test
+    void return400_OverOneIncorrectField() throws Exception {
+        String requestBody = """
+                {
+                  "cardFromNumber": "321",
+                  "cardToNumber": "321",
+                  "cardFromCVV": "zz",
+                  "cardFromValidTill": "11/19",
+                  "amount": {
+                    "currency": "RUR",
+                    "value": 300000
+                  }
+                }
+                """;
+        mockMvc.perform(
+                        post("/transfer")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(requestBody)
+                )
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").isNotEmpty());
+    }
+    @Test
     void return400_incorrectCardToNumberTest() throws Exception {
         String requestBody = """
                 {

@@ -13,8 +13,6 @@ import ru.netology.moneytransfer.exceptions.CardNotValidException;
 import ru.netology.moneytransfer.exceptions.OperationException;
 import ru.netology.moneytransfer.exceptions.OperationNotFoundException;
 
-import java.util.stream.Collectors;
-
 @RestControllerAdvice
 public class ExceptionHandlerForControllersAdvice {
 
@@ -34,9 +32,19 @@ public class ExceptionHandlerForControllersAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(MethodArgumentNotValidException exception) {
-        String errorMessage = exception.getBindingResult().getFieldErrors().stream().map(p -> "[" + p.getField() + " = " + p.getRejectedValue() + "] причина: " + p.getDefaultMessage()).collect(Collectors.joining(";   "));
+        var errorMessage = new StringBuilder();
+        var errors = exception.getBindingResult().getFieldErrors();
+        for (var err : errors) {
+            errorMessage.append("[")
+                    .append(err.getField())
+                    .append(" ")
+                    .append(err.getRejectedValue())
+                    .append("] причина: ")
+                    .append(err.getDefaultMessage())
+                    .append(";   ");
+        }
         fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, errorMessage);
-        ErrorDTO error = ErrorDTO.builder().operationId(-1).message(errorMessage).build();
+        ErrorDTO error = ErrorDTO.builder().operationId(-1).message(errorMessage.toString()).build();
         return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
