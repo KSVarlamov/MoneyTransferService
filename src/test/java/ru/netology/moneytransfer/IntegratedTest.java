@@ -54,7 +54,7 @@ class IntegratedTest {
         System.out.println(response.getBody());
         Assertions.assertEquals(200, response.getStatusCode().value());
 
-        int operationId = Objects.requireNonNull(response.getBody()).getOperationId();
+        int operationId = Objects.requireNonNull(response.getBody()).operationId();
         ConfirmOperationDTO confirmOperationDTO;
         confirmOperationDTO = new ConfirmOperationDTO(operationId, "1234");
 
@@ -65,7 +65,7 @@ class IntegratedTest {
 
         assertThat(response.getStatusCode().value())
                 .isEqualTo(200);
-        assertThat(Objects.requireNonNull(response.getBody()).getOperationId())
+        assertThat(Objects.requireNonNull(response.getBody()).operationId())
                 .isEqualTo(operationId);
 
     }
