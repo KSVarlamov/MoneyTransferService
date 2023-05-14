@@ -1,4 +1,4 @@
-package ru.netology.moneytransfer;
+package ru.netology.moneytransfer.controller;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

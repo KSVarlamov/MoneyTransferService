@@ -1,6 +1,9 @@
 package ru.netology.moneytransfer.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 import ru.netology.moneytransfer.dto.CardToCardOperationDTO;
 import ru.netology.moneytransfer.model.CardToCardOperation;
 import ru.netology.moneytransfer.repository.OperationsRepository;
@@ -10,6 +13,7 @@ import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
+@Validated
 public class TransferService {
     private final AtomicInteger operationId = new AtomicInteger(0);
     private final OperationsRepository operationsRepository;
@@ -20,7 +24,7 @@ public class TransferService {
         this.operationsRepository = operationsRepository;
     }
 
-    public CardToCardOperation transferMoney(CardToCardOperationDTO operationDTO) {
+    public CardToCardOperation transferMoney(@Valid @NotNull CardToCardOperationDTO operationDTO) {
         final var operation = new CardToCardOperation(operationId.incrementAndGet());
         operationsRepository.add(operation);
 
