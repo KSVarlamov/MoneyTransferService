@@ -6,8 +6,6 @@ import ru.netology.moneytransfer.exceptions.OperationNotFoundException;
 import ru.netology.moneytransfer.model.CardToCardOperation;
 import ru.netology.moneytransfer.repository.OperationsRepository;
 
-import java.util.Optional;
-
 @Service
 public class ConfirmOperationService {
 
@@ -19,7 +17,7 @@ public class ConfirmOperationService {
 
     public synchronized CardToCardOperation confirm(ConfirmOperationDTO operationDTO) {
 
-        Optional<CardToCardOperation> operation = operationsRepository.getById(operationDTO.operationId());
+        var operation = operationsRepository.getById(operationDTO.operationId());
         if (operation.isEmpty()) {
             throw new OperationNotFoundException("Ошибка обработки операции: нет операции с id=" + operationDTO.operationId(), operationDTO.operationId());
         }

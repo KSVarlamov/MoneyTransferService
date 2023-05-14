@@ -23,7 +23,7 @@ public class ExceptionHandlerForControllersAdvice {
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorDTO> handleException(HttpMessageNotReadableException exception) {
         fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, exception.getMessage());
-        ErrorDTO error = ErrorDTO.builder()
+        var error = ErrorDTO.builder()
                 .operationId(-1)
                 .message(exception.getMessage())
                 .build();
@@ -54,7 +54,7 @@ public class ExceptionHandlerForControllersAdvice {
     @ExceptionHandler(CardNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(CardNotValidException exception) {
         fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, exception.getOperation());
-        ErrorDTO error = ErrorDTO.builder()
+        var error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
                 .build();
@@ -64,7 +64,7 @@ public class ExceptionHandlerForControllersAdvice {
     @ExceptionHandler(OperationException.class)
     public ResponseEntity<ErrorDTO> handleException(OperationException exception) {
         fileLogger.error(OPERATION_ERROR_MESSAGE_TEMPLATE, exception.getOperation());
-        ErrorDTO error = ErrorDTO.builder()
+        var error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
                 .build();
@@ -75,7 +75,7 @@ public class ExceptionHandlerForControllersAdvice {
     @ExceptionHandler(OperationNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleException(OperationNotFoundException exception) {
         fileLogger.error(OPERATION_ERROR_MESSAGE_TEMPLATE, exception.getMessage());
-        ErrorDTO error = ErrorDTO.builder()
+        var error = ErrorDTO.builder()
                 .operationId(exception.getId())
                 .message(exception.getMessage())
                 .build();

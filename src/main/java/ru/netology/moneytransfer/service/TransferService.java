@@ -21,10 +21,10 @@ public class TransferService {
     }
 
     public CardToCardOperation transferMoney(CardToCardOperationDTO operationDTO) {
-        final CardToCardOperation operation = new CardToCardOperation(operationId.incrementAndGet());
+        final var operation = new CardToCardOperation(operationId.incrementAndGet());
         operationsRepository.add(operation);
 
-        BigDecimal amountInRub = BigDecimal.valueOf((double) operationDTO.amount().value() / 100); //Переводим копейки в рубли
+        var amountInRub = BigDecimal.valueOf((double) operationDTO.amount().value() / 100); //Переводим копейки в рубли
         operation.setAmount(amountInRub);
         operation.setCommission(amountInRub.multiply(COMMISSION_PRICE));
 

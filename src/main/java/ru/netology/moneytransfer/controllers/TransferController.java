@@ -39,7 +39,7 @@ public class TransferController {
     @PostMapping("confirmOperation")
     public OperationDTO handleRequest(@RequestBody @Valid ConfirmOperationDTO confirmOperationDTO) {
         fileLogger.info("Получен запрос на подтвержение операции перевода [{}]", confirmOperationDTO);
-        CardToCardOperation c2cOperation = confirmOperationService.confirm(confirmOperationDTO);
+        var c2cOperation = confirmOperationService.confirm(confirmOperationDTO);
         fileLogger.info("Обработан запрос на подтвеждение операции {}", c2cOperation);
         return new OperationDTO(c2cOperation.getId());
     }
