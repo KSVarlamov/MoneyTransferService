@@ -3,12 +3,13 @@ package ru.netology.moneytransfer.repository;
 import org.springframework.stereotype.Repository;
 import ru.netology.moneytransfer.model.CardToCardOperation;
 
+import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Repository
 public class OperationsRepositoryInMemory implements OperationsRepository {
-    private final ConcurrentHashMap<Integer, CardToCardOperation> operations = new ConcurrentHashMap<>();
+    private final Map<Integer, CardToCardOperation> operations = new ConcurrentHashMap<>();
 
     @Override
     public void add(CardToCardOperation operation) {
