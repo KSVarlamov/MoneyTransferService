@@ -20,11 +20,11 @@ public class ExceptionHandlerForControllersAdvice {
 
     public static final String RESPONSE_ERROR_MESSAGE_TEMPLATE = "Некорректеный запрос: [{}]";
     public static final String OPERATION_ERROR_MESSAGE_TEMPLATE = "Ошибка обработки операции [{}]";
-    static final Logger fileLogger = LoggerFactory.getLogger("OperationsLog");
+    private static final Logger fileLogger = LoggerFactory.getLogger("OperationsLog");
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorDTO> handleException(HttpMessageNotReadableException exception) {
-        fileLogger.warn(RESPONSE_ERROR_MESSAGE_TEMPLATE, exception.getMessage());
+        fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, exception.getMessage());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(-1)
                 .message(exception.getMessage())
@@ -35,7 +35,7 @@ public class ExceptionHandlerForControllersAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(MethodArgumentNotValidException exception) {
         String errorMessage = exception.getBindingResult().getFieldErrors().stream().map(p -> "[" + p.getField() + " = " + p.getRejectedValue() + "] причина: " + p.getDefaultMessage()).collect(Collectors.joining(";   "));
-        fileLogger.warn(RESPONSE_ERROR_MESSAGE_TEMPLATE, errorMessage);
+        fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, errorMessage);
         ErrorDTO error = ErrorDTO.builder().operationId(-1).message(errorMessage).build();
         return new ResponseEntity<>(error, HttpStatusCode.valueOf(400));
     }
@@ -43,7 +43,7 @@ public class ExceptionHandlerForControllersAdvice {
 
     @ExceptionHandler(CardNotValidException.class)
     public ResponseEntity<ErrorDTO> handleException(CardNotValidException exception) {
-        fileLogger.warn(RESPONSE_ERROR_MESSAGE_TEMPLATE, exception.getOperation());
+        fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, exception.getOperation());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
@@ -53,7 +53,7 @@ public class ExceptionHandlerForControllersAdvice {
 
     @ExceptionHandler(OperationException.class)
     public ResponseEntity<ErrorDTO> handleException(OperationException exception) {
-        fileLogger.warn(OPERATION_ERROR_MESSAGE_TEMPLATE, exception.getOperation());
+        fileLogger.error(OPERATION_ERROR_MESSAGE_TEMPLATE, exception.getOperation());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
@@ -64,7 +64,7 @@ public class ExceptionHandlerForControllersAdvice {
 
     @ExceptionHandler(OperationNotFoundException.class)
     public ResponseEntity<ErrorDTO> handleException(OperationNotFoundException exception) {
-        fileLogger.warn(OPERATION_ERROR_MESSAGE_TEMPLATE, exception.getMessage());
+        fileLogger.error(OPERATION_ERROR_MESSAGE_TEMPLATE, exception.getMessage());
         ErrorDTO error = ErrorDTO.builder()
                 .operationId(exception.getId())
                 .message(exception.getMessage())
