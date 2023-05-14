@@ -26,7 +26,7 @@ public class TransferService {
         final CardToCardOperation operation = new CardToCardOperation(operationId.incrementAndGet());
         operationsRepository.add(operation);
 
-        BigDecimal amountInRub = BigDecimal.valueOf((double) operationDTO.amount().getValue() / 100); //Переводим копейки в рубли
+        BigDecimal amountInRub = BigDecimal.valueOf((double) operationDTO.amount().value() / 100); //Переводим копейки в рубли
         operation.setAmount(amountInRub);
         operation.setCommission(amountInRub.multiply(COMMISSION_PRICE));
 
@@ -46,8 +46,8 @@ public class TransferService {
             operation.setCcFrom(operationDTO.cardFromNumber());
             operation.setCcTo(operationDTO.cardToNumber());
         }
-        operation.setCurrency(operationDTO.amount().getCurrency());
-        if (!"RUR".equals(operationDTO.amount().getCurrency())) {
+        operation.setCurrency(operationDTO.amount().currency());
+        if (!"RUR".equals(operationDTO.amount().currency())) {
             String err = "Ошибка обработки операции: Доступны переводы только в рублях";
             operation.setStatus(CardToCardOperation.Status.FAILED);
             operation.setReason(err);
