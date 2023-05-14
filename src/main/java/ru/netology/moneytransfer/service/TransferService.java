@@ -13,7 +13,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class TransferService {
-    private static final AtomicInteger operationId = new AtomicInteger(0);
+    private final AtomicInteger operationId = new AtomicInteger(0);
     private final OperationsRepository operationsRepository;
 
     private static final BigDecimal COMMISSION_PRICE = BigDecimal.valueOf(0.01);
