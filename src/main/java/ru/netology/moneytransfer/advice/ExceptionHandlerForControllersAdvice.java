@@ -2,7 +2,7 @@ package ru.netology.moneytransfer.advice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatusCode;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -29,7 +29,7 @@ public class ExceptionHandlerForControllersAdvice {
                 .operationId(-1)
                 .message(exception.getMessage())
                 .build();
-        return new ResponseEntity<>(error, HttpStatusCode.valueOf(400));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -37,7 +37,7 @@ public class ExceptionHandlerForControllersAdvice {
         String errorMessage = exception.getBindingResult().getFieldErrors().stream().map(p -> "[" + p.getField() + " = " + p.getRejectedValue() + "] причина: " + p.getDefaultMessage()).collect(Collectors.joining(";   "));
         fileLogger.error(RESPONSE_ERROR_MESSAGE_TEMPLATE, errorMessage);
         ErrorDTO error = ErrorDTO.builder().operationId(-1).message(errorMessage).build();
-        return new ResponseEntity<>(error, HttpStatusCode.valueOf(400));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
 
@@ -48,7 +48,7 @@ public class ExceptionHandlerForControllersAdvice {
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
                 .build();
-        return new ResponseEntity<>(error, HttpStatusCode.valueOf(400));
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(OperationException.class)
@@ -58,7 +58,7 @@ public class ExceptionHandlerForControllersAdvice {
                 .operationId(exception.getOperation().getId())
                 .message(exception.getMessage())
                 .build();
-        return new ResponseEntity<>(error, HttpStatusCode.valueOf(500));
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 
@@ -69,6 +69,6 @@ public class ExceptionHandlerForControllersAdvice {
                 .operationId(exception.getId())
                 .message(exception.getMessage())
                 .build();
-        return new ResponseEntity<>(error, HttpStatusCode.valueOf(500));
+        return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }
