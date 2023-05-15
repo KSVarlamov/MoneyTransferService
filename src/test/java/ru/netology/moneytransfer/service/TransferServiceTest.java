@@ -90,6 +90,4 @@ public class TransferServiceTest {
         assertThat(err.getMessage())
                 .endsWith("Доступны переводы только в рублях");
     }
-
-
 }
